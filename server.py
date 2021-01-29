@@ -39,7 +39,7 @@ def handle(client):
             CLIENTS.remove(client)
             client.close()
             nickname = NICKNAMES[index]
-            broadcast('{} left!'.format(nickname).encode('ascii'))
+            broadcast("{} left!".format(nickname).encode("ascii"))
             NICKNAMES.remove(nickname)
             break
 
@@ -56,15 +56,15 @@ def receive():
         print("Connected with {}".format(str(address)))
 
         # Request And Store Nickname
-        client.send('NICK'.encode('ascii'))
-        nickname = client.recv(1024).decode('ascii')
+        client.send("NICK".encode("ascii"))
+        nickname = client.recv(1024).decode("ascii")
         NICKNAMES.append(nickname)
         CLIENTS.append(client)
 
         # Print And Broadcast Nickname
         print("Nickname is {}".format(nickname))
-        broadcast("{} joined!\n".format(nickname).encode('ascii'))
-        client.send('Connected to server!'.encode('ascii'))
+        broadcast("{} joined!\n".format(nickname).encode("ascii"))
+        client.send("Connected to server!".encode("ascii"))
 
         # Start Handling Thread For Client
         thread = threading.Thread(target=handle, args=(client,))
