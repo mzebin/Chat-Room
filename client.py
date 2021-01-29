@@ -1,6 +1,7 @@
 import socket
 import threading
 
+# Connection Data
 HOST = "127.0.0.1"
 PORT = 55555
 
@@ -9,7 +10,7 @@ nickname = input("Choose your nickname: ")
 
 # Connecting To Server
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client.connect(HOST, PORT)
+client.connect((HOST, PORT))
 
 
 # Listening to Server and Sending Nickname
