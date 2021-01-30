@@ -94,8 +94,20 @@ def receive():
         thread.start()
 
 
+# Kicking users.
+# Accepts a user as a parameter
+# and kicks the user.
 def kick(user):
-    pass
+    if user in NICKNAMES:
+        index = NICKNAMES.index(user)
+        client = CLIENTS[index]
+
+        CLIENTS.remove(client)
+        NICKNAMES.remove(user)
+
+        client.send("KICKED".encode("ascii"))
+        client.close()
+        broadcast("{} was kicked by an Admin!".format(user).encode("ascii"))
 
 
 if __name__ == "__main__":

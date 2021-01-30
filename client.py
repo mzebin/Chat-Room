@@ -35,6 +35,11 @@ def receive():
             elif message == "REFUSED":
                 print("Connection was refused. Wrong Password!")
                 quit()
+            elif message == "CMDERROR":
+                print("Invalid Command")
+            elif message == "KICKED":
+                print("You were kicked by an Admin")
+                quit()
             else:
                 print(message)
         except:
