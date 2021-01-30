@@ -40,13 +40,16 @@ def receive():
             elif message == "KICKED":
                 print("You were kicked by an Admin")
                 quit()
+            elif message == "BAN":
+                print("Connection refused due to ban.")
+                quit()
             else:
                 print(message)
         except:
             # Close Connection When Error
             print("An error occured!")
             CLIENT.close()
-            break
+            quit()
 
 
 # Sending Messages To Server

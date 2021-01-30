@@ -51,14 +51,15 @@ def handle(client):
             else:
                 broadcast(message)
         except:
-            # Removing And Closing Clients
-            index = CLIENTS.index(client)
-            CLIENTS.remove(client)
-            client.close()
-            nickname = NICKNAMES[index]
-            broadcast("{} left!".format(nickname).encode("ascii"))
-            NICKNAMES.remove(nickname)
-            break
+            if client in CLIENTS:
+                # Removing And Closing Clients
+                index = CLIENTS.index(client)
+                CLIENTS.remove(client)
+                client.close()
+                nickname = NICKNAMES[index]
+                broadcast("{} left!".format(nickname).encode("ascii"))
+                NICKNAMES.remove(nickname)
+                break
 
 
 # Receiving / Listening Function,
@@ -80,6 +81,10 @@ def receive():
         if nickname == "Admin":
             client.send("ADMINPASS".encode("ascii"))
             password = client.recv(1024).decode("ascii")
+        elif nickname in BANNED_USERS:
+            client.send("BAN".encode("ascii"))
+            client.close()
+            continue
 
             # Check if password is equal to
             # the admin password.
@@ -89,6 +94,8 @@ def receive():
                 client.close()
                 continue
 
+        # Append Nickname to NICKNAMES and
+        # Append Client to CLIENTS.
         NICKNAMES.append(nickname)
         CLIENTS.append(client)
 
