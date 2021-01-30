@@ -49,8 +49,21 @@ def receive():
 # send the message.
 def write():
     while True:
-        message = "{}: {}".format(NICKNAME, input(""))
-        CLIENT.send(message.encode("ascii"))
+        message = input("")
+
+        # Check for commands
+        if message.startswith("/"):
+            if NICKNAME == "Admin":
+                if message.startswith("/kick "):
+                    username = message.replace("/kick ", "")
+                    CLIENT.send("KICK {}".format(username).encode("ascii"))
+                else:
+                    print("Invalid Command")
+            else:
+                print("Commands can only be executed by an Admin")
+        else:
+            message = "{}: {}".format(NICKNAME, message)
+            CLIENT.send(message.encode("ascii"))
 
 
 # Starting Threads For Recieving And Writing

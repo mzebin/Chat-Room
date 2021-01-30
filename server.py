@@ -30,9 +30,18 @@ def broadcast(message):
 def handle(client):
     while True:
         try:
-            # Broadcasting Messages
+            # Recieving Messages
             message = client.recv(1024)
-            broadcast(message)
+
+            # Checking for commands and Broadcasting Messages
+            if message.decode("ascii").startswith("KICK"):
+                username = message.decode("ascii").replace("KICK ", "")
+                if username in NICKNAMES:
+                    kick(username)
+                else:
+                    client.send("CMDERROR".encode("ascii"))
+            else:
+                broadcast(message)
         except:
             # Removing And Closing Clients
             index = CLIENTS.index(client)
@@ -83,6 +92,10 @@ def receive():
         # Start Handling Thread For Client
         thread = threading.Thread(target=handle, args=(client,))
         thread.start()
+
+
+def kick(user):
+    pass
 
 
 if __name__ == "__main__":
