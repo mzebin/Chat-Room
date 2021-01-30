@@ -1,3 +1,4 @@
+import getpass
 import socket
 import threading
 
@@ -7,6 +8,10 @@ PORT = 55555
 
 # Choosing Nickname
 NICKNAME = input("Choose your nickname: ")
+
+# Check if Nickname is Admin
+if NICKNAME == "Admin":
+    PASSWORD = getpass.getpass("Enter Password for Admin: ")
 
 # Connecting To Server
 CLIENT = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
