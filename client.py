@@ -30,6 +30,8 @@ def receive():
             message = CLIENT.recv(1024).decode("ascii")
             if message == "NICK":
                 CLIENT.send(NICKNAME.encode("ascii"))
+            elif message == "ADMINPASS":
+                CLIENT.send(PASSWORD.encode("ascii"))
             else:
                 print(message)
         except:

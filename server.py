@@ -58,6 +58,12 @@ def receive():
         # Request And Store Nickname
         client.send("NICK".encode("ascii"))
         nickname = client.recv(1024).decode("ascii")
+
+        # Checking if Nickname is Admin
+        if nickname == "Admin":
+            client.send("ADMINPASS".encode("ascii"))
+            password = client.recv(1024).decode("ascii")
+
         NICKNAMES.append(nickname)
         CLIENTS.append(client)
 
