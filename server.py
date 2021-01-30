@@ -11,6 +11,7 @@ SERVER.bind((HOST, PORT))
 SERVER.listen()
 
 # Clients Data
+BANNED_USERS = []
 CLIENTS = []
 NICKNAMES = []
 
@@ -38,6 +39,13 @@ def handle(client):
                 username = message.decode("ascii").replace("KICK ", "")
                 if username in NICKNAMES:
                     kick(username)
+                else:
+                    client.send("CMDERROR".encode("ascii"))
+            elif message.decode("ascii").startswith("BAN"):
+                username = message.decode("ascii").replace("BAN ", "")
+                if username in NICKNAMES:
+                    kick(username)
+                    BANNED_USERS.append(username)
                 else:
                     client.send("CMDERROR".encode("ascii"))
             else:

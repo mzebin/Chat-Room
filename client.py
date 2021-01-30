@@ -62,6 +62,9 @@ def write():
                 if message.startswith("/kick "):
                     username = message.replace("/kick ", "")
                     CLIENT.send("KICK {}".format(username).encode("ascii"))
+                elif message.startswith("/ban "):
+                    username = message.replace("/ban ", "")
+                    CLIENT.send("BAN {}".format(username).encode("ascii"))
                 else:
                     print("Invalid Command")
             else:
