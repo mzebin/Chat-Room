@@ -32,6 +32,9 @@ def receive():
                 CLIENT.send(NICKNAME.encode("ascii"))
             elif message == "ADMINPASS":
                 CLIENT.send(PASSWORD.encode("ascii"))
+            elif message == "REFUSED":
+                print("Connection was refused. Wrong Password!")
+                quit()
             else:
                 print(message)
         except:

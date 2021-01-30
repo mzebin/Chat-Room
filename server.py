@@ -64,6 +64,14 @@ def receive():
             client.send("ADMINPASS".encode("ascii"))
             password = client.recv(1024).decode("ascii")
 
+            # Check if password is equal to
+            # the admin password.
+            if password != "adminpass":
+                # Closing Client Connection.
+                client.send("REFUSED".encode("ascii"))
+                client.close()
+                continue
+
         NICKNAMES.append(nickname)
         CLIENTS.append(client)
 
