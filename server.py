@@ -48,6 +48,9 @@ def handle(client):
                     BANNED_USERS.append(username)
                 else:
                     client.send("CMDERROR".encode("ascii"))
+            elif message.decode("ascii").startswith("CLIENTSLIST"):
+                clients = "CLIENTS " + " ".join(NICKNAMES)
+                client.send(clients.encode("ascii"))
             else:
                 broadcast(message)
         except:
@@ -77,14 +80,10 @@ def receive():
         client.send("NICK".encode("ascii"))
         nickname = client.recv(1024).decode("ascii")
 
-        # Checking if Nickname is Admin
+        # Checking if Nickname is Admin or in BANNED_USERS.
         if nickname == "Admin":
             client.send("ADMINPASS".encode("ascii"))
             password = client.recv(1024).decode("ascii")
-        elif nickname in BANNED_USERS:
-            client.send("BAN".encode("ascii"))
-            client.close()
-            continue
 
             # Check if password is equal to
             # the admin password.
@@ -93,6 +92,10 @@ def receive():
                 client.send("REFUSED".encode("ascii"))
                 client.close()
                 continue
+        elif nickname in BANNED_USERS:
+            client.send("BAN".encode("ascii"))
+            client.close()
+            continue
 
         # Append Nickname to NICKNAMES and
         # Append Client to CLIENTS.
@@ -110,8 +113,8 @@ def receive():
 
 
 # Kicking users.
-# Accepts a user as a parameter
-# and kicks the user.
+# Accepts a user as
+# a parameter
 def kick(user):
     if user in NICKNAMES:
         index = NICKNAMES.index(user)
@@ -122,7 +125,7 @@ def kick(user):
 
         client.send("KICKED".encode("ascii"))
         client.close()
-        broadcast("{} was kicked by an Admin!".format(user).encode("ascii"))
+        broadcast("{} was kicked by an admin!".format(user).encode("ascii"))
 
 
 if __name__ == "__main__":
