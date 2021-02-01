@@ -25,6 +25,11 @@ ADMIN_COMMANDS = {
     "/kick": "To kick a Client. Usage: /kick {Nickname}",
 }
 
+CLIENT_COMMANDS = {
+    "!commands": "To see the list of Commands. Usage: !commands",
+    "!quit": "To quit from the chat. Usage: !quit",
+}
+
 # Set RUNNING to True
 RUNNING = True
 
@@ -98,6 +103,9 @@ def write():
             if message.startswith("!quit"):
                 if input("Do You want to quit? ").lower().startswith("y"):
                     RUNNING = False
+            elif message.startswith("!commands"):
+                for key, value in CLIENT_COMMANDS.items():
+                    print("{}: {}".format(key, value))
             else:
                 print("Invalid Command")
         else:
