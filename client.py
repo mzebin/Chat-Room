@@ -17,16 +17,26 @@ if NICKNAME == "Admin":
 CLIENT = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 CLIENT.connect((HOST, PORT))
 
+# Commands
+ADMIN_COMMANDS = {
+    "/ban": "To ban a Client. Usage: /ban {Nickname}",
+    "/clients": "To see a list of Connected Clients. Usage: /clients",
+    "/commands": "To see the list of Commands. Usage: /commands",
+    "/kick": "To kick a Client. Usage: /kick {Nickname}",
+}
+
+# Set RUNNING to True
+RUNNING = True
+
 
 # Listening to Server and Sending Nickname,
 # Listens for message and if message == "NICK",
 # send Nickname to Server. Close the connection
 # if a connection error occurs.
 def receive():
-    while True:
+    while RUNNING:
         try:
-            # Receive Message From Server
-            # If "NICK" Send Nickname
+            # Receiving Message From Server
             message = CLIENT.recv(1024).decode("ascii")
             if message == "NICK":
                 CLIENT.send(NICKNAME.encode("ascii"))
@@ -34,44 +44,62 @@ def receive():
                 CLIENT.send(PASSWORD.encode("ascii"))
             elif message == "REFUSED":
                 print("Connection was refused. Wrong Password!")
-                quit()
-            elif message == "CMDERROR":
-                print("Invalid Command")
+                exit()
             elif message == "KICKED":
                 print("You were kicked by an Admin")
-                quit()
+                exit()
             elif message == "BAN":
                 print("Connection refused due to ban.")
-                quit()
+                exit()
+            elif message == "CMDERROR":
+                print("Invalid Command")
+            elif message.startswith("CLIENTS"):
+                clients_list = message.split()[1:]
+                for index, client in enumerate(clients_list):
+                    print(index + 1, client)
             else:
                 print(message)
-        except:
+        except Exception as err:
+            raise err
             # Close Connection When Error
             print("An error occured!")
             CLIENT.close()
-            quit()
+            exit()
 
 
 # Sending Messages To Server
 # Wait for user input and
 # send the message.
 def write():
+    global RUNNING
+
     while True:
-        message = input("")
+        message = input()
 
         # Check for commands
         if message.startswith("/"):
             if NICKNAME == "Admin":
-                if message.startswith("/kick "):
+                if message.startswith("/kick"):
                     username = message.replace("/kick ", "")
                     CLIENT.send("KICK {}".format(username).encode("ascii"))
-                elif message.startswith("/ban "):
+                elif message.startswith("/ban"):
                     username = message.replace("/ban ", "")
                     CLIENT.send("BAN {}".format(username).encode("ascii"))
+                elif message.startswith("/commands"):
+                    for key, value in ADMIN_COMMANDS.items():
+                        print("{}: {}".format(key, value))
+                elif message.startswith("/clients"):
+                    CLIENT.send("CLIENTSLIST".encode("ascii"))
                 else:
                     print("Invalid Command")
             else:
                 print("Commands can only be executed by an Admin")
+        elif message.startswith("!"):
+            if message.startswith("!quit"):
+                if input("Do You want to quit? ").lower().startswith("y"):
+                    RUNNING = False
+            else:
+                print("Invalid Command")
         else:
             message = "{}: {}".format(NICKNAME, message)
             CLIENT.send(message.encode("ascii"))
